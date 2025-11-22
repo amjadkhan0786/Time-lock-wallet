@@ -1,0 +1,25 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
+
+contract TimeLockWallet {
+    address public owner;
+    uint256 public unlockTime;
+
+    constructor(uint256 _unlockTime) payable {
+        owner = msg.sender;
+        unlockTime = _unlockTime;
+    }
+
+    function deposit() external payable {
+    }
+
+    function withdraw() external {
+        require(msg.sender == owner, "Not owner");
+        require(block.timestamp >= unlockTime, "Locked");
+        payable(msg.sender).transfer(address(this).balance);
+    }
+
+    receive() external payable {}
+    fallback() external payable {}
+}
+
